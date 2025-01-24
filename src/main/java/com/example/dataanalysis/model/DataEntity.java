@@ -1,4 +1,4 @@
-package src.main.java.com.example.dataanalysis.model;
+package com.example.dataanalysis.model;
 
 import jakarta.persistence.*;
 
@@ -9,18 +9,31 @@ public class DataEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "data_name", nullable = false)
-    private String dataName;
+    @Column(name = "project_id", nullable = false) // Added Project ID
+    private String projectId;
 
-    @Column(name = "value", nullable = false)
-    private double value;
+    @Column(name = "project_name", nullable = false) // Renamed for clarity
+    private String projectName;
+
+    @Column(name = "budget", nullable = false)
+    private Double budget;
+
+    @Column(name = "spent")
+    private Double spent;
+
+    @Column(name = "status")
+    private String status;
 
     // Constructors
     public DataEntity() {}
 
-    public DataEntity(String dataName, double value) {
-        this.dataName = dataName;
-        this.value = value;
+    // Constructor with all fields
+    public DataEntity(String projectId, String projectName, Double budget, Double spent, String status) {
+        this.projectId = projectId;
+        this.projectName = projectName;
+        this.budget = budget;
+        this.spent = spent;
+        this.status = status;
     }
 
     // Getters and Setters
@@ -32,19 +45,43 @@ public class DataEntity {
         this.id = id;
     }
 
-    public String getDataName() {
-        return dataName;
+    public String getProjectId() {
+        return projectId;
     }
 
-    public void setDataName(String dataName) {
-        this.dataName = dataName;
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 
-    public double getValue() {
-        return value;
+    public String getProjectName() {
+        return projectName;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public Double getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Double budget) {
+        this.budget = budget;
+    }
+
+    public Double getSpent() {
+        return spent;
+    }
+
+    public void setSpent(Double spent) {
+        this.spent = spent;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

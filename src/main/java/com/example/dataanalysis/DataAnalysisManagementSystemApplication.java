@@ -1,4 +1,4 @@
-package src.main.java.com.example.dataanalysis;
+package com.example.dataanalysis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
