@@ -1,12 +1,22 @@
 package com.example.dataanalysis.controller;
 
 import com.example.dataanalysis.model.DataEntity;
+import com.example.dataanalysis.service.CsvImportService;
 import com.example.dataanalysis.service.DataService;
+import com.opencsv.exceptions.CsvValidationException;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.dataanalysis.service.ChartService;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +25,12 @@ import java.util.Optional;
 public class DataController {
     @Autowired
     private DataService dataService;
+
+    @Autowired
+    private CsvImportService csvImportService;
+
+    @Autowired
+    private ChartService chartService;
 
     @GetMapping
     public ResponseEntity<List<DataEntity>> getAllData() {
@@ -70,6 +86,38 @@ public class DataController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/upload/csv")
+    public ResponseEntity<?> uploadCsvData(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Please select a CSV file to upload.");
+        }
+        try {
+            csvImportService.importCsvData(file);
+            return ResponseEntity.ok("CSV data uploaded and saved successfully.");
+        } catch (IOException | CsvValidationException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error processing CSV file: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/stats/mean-budget")
+    public ResponseEntity<Double> getMeanBudget() {
+        double meanBudget = dataService.calculateMeanBudget();
+        return ResponseEntity.ok(meanBudget);
+    }
+
+    @GetMapping(value = "/chart/budget", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getBudgetChart() {
+        try {
+            JFreeChart chart = chartService.createBudgetBarChart();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ChartUtils.writeChartAsPNG(outputStream, chart, 800, 600);
+            return ResponseEntity.ok().body(outputStream.toByteArray());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
 @Transactional
 public class DataService {
     @Autowired
-    private DataRepository dataRepository; // Abstraction through interface
+    private DataRepository dataRepository;
 
     public List<DataEntity> getAllData() {
         return dataRepository.findAll();
@@ -24,7 +24,6 @@ public class DataService {
     }
 
     public DataEntity saveData(DataEntity dataEntity) {
-        // Basic validation before saving (can be expanded)
         if (dataEntity.getProjectName() == null || dataEntity.getProjectName().trim().isEmpty()) {
             throw new IllegalArgumentException("Project Name cannot be empty");
         }
@@ -34,15 +33,29 @@ public class DataService {
         return dataRepository.save(dataEntity);
     }
 
+    public List<DataEntity> saveAllData(List<DataEntity> dataEntities) {
+        for (DataEntity dataEntity : dataEntities) {
+            // Apply the same validation as in saveData
+            if (dataEntity.getProjectName() == null || dataEntity.getProjectName().trim().isEmpty()) {
+                throw new IllegalArgumentException("Project Name cannot be empty");
+            }
+            if (dataEntity.getBudget() == null || dataEntity.getBudget() < 0) {
+                throw new IllegalArgumentException("Budget must be a non-negative value");
+            }
+        }
+        return dataRepository.saveAll(dataEntities);
+    }
+
     public void deleteData(Long id) {
         dataRepository.deleteById(id);
     }
 
-    // Example of a custom query method that you might add later:
-    // public List<DataEntity> findByStatus(String status) {
-    //     return dataRepository.findByStatus(status);
-    // }
+    public double calculateMeanBudget() {
+        List<DataEntity> allData = dataRepository.findAll();
+        return allData.stream()
+                .mapToDouble(DataEntity::getBudget)
+                .average()
+                .orElse(Double.NaN); // Handle case where there is no data
+    }
 }
-
-
 

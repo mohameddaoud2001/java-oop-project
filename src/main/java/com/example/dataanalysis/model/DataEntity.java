@@ -9,10 +9,10 @@ public class DataEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "project_id", nullable = false) // Added Project ID
+    @Column(name = "project_id", nullable = false)
     private String projectId;
 
-    @Column(name = "project_name", nullable = false) // Renamed for clarity
+    @Column(name = "project_name", nullable = false)
     private String projectName;
 
     @Column(name = "budget", nullable = false)
@@ -85,3 +85,4 @@ public class DataEntity {
         this.status = status;
     }
 }
+
