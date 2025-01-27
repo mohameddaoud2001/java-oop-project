@@ -116,7 +116,3 @@ You can use Postman to test the API endpoints. Import the provided Postman colle
 *   **Frontend:** Develop a user interface for easier interaction with the system.
 *   **Scalability:** Optimize database queries and implement caching for improved performance.
 *   **Dockerization:** Containerize the application for easier deployment.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues to suggest improvements or report bugs.
